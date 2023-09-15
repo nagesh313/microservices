@@ -1,0 +1,14 @@
+server:
+  port: ${PORT:8082}
+spring:
+  application:
+    name: vote-service
+  datasource:
+    url: jdbc:h2:mem:VOTE_DB
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  h2:
+    console.enabled: true
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect

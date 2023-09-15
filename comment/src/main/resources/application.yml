@@ -1,0 +1,17 @@
+server:
+  port: ${PORT:8080}
+spring:
+  application:
+    name: comment-service
+  datasource:
+    url: jdbc:h2:mem:COMMENT_DB
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  h2:
+    console.enabled: true
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+springdoc:
+  api-docs:
+    path=/api-docs:
