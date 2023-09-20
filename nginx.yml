@@ -1,0 +1,79 @@
+# Create a namespace for the NGINX Ingress Controller
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-ingress
+
+---
+# Deploy the NGINX Ingress Controller
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: nginx-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:latest
+          args:
+            - /nginx-ingress-controller
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+
+---
+# Create a ConfigMap for NGINX configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+  namespace: nginx-ingress
+
+---
+# Create a Service for the NGINX Ingress Controller
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-controller
+  namespace: nginx-ingress
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: nginx-ingress
+
+---
+# Create an Ingress resource for your application
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+spec:
+  rules:
+    - host: your.domain.com  # Replace with your desired domain or use an IP
+      http:
+        paths:
+          - path: /eureka
+            pathType: Prefix
+            backend:
+              service:
+                name: eureka-service  # Name of your application service
+                port:
+                  number: 80

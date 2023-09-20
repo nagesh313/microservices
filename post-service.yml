@@ -1,0 +1,58 @@
+# demo-service-deployment-service-ingress.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: post-service
+  template:
+    metadata:
+      labels:
+        app: post-service
+    spec:
+      containers:
+        - name: post-service
+          image: post-service
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: post-service
+#spec:
+#  selector:
+#    app: post-service
+#  ports:
+#    - protocol: TCP
+#      port: 8080 # The port that the service is running on in the cluster
+#  type: LoadBalancer # type of the service.
+
+
+
+#---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: example-ingress
+#spec:
+#  ingressClassName: nginx
+#  rules:
+#    - http:
+#        paths:
+#          - pathType: Prefix
+#            path: /demo
+#            backend:
+#              service:
+#                name: demo-service
+#                port:
+#                  number: 80

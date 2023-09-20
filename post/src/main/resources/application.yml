@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8081}
+  port: ${PORT:8080}
 spring:
   application:
     name: post-service
@@ -12,3 +12,7 @@ spring:
     console.enabled: true
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  boot:
+    admin:
+      client:
+        url: http://localhost:9091

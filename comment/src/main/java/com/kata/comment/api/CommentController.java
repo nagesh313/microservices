@@ -2,15 +2,18 @@ package com.kata.comment.api;
 
 import com.kata.comment.entity.Comment;
 import com.kata.comment.service.CommentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/posts/{postId}/comments")
+@RequestMapping("/api/v1/comment/{postId}")
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
@@ -20,38 +23,34 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // Create a new comment on a post
     @PostMapping
-    public ResponseEntity<Comment> createComment(@PathVariable Long postId, @RequestBody Comment comment) {
+    public ResponseEntity<Comment> createComment(@PathVariable String postId, @RequestBody Comment comment) {
+        log.info("=========createComment=========",postId);
         Comment createdComment = commentService.createComment(postId, comment);
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
-    // Retrieve all comments on a post
     @GetMapping
-    public ResponseEntity<List<Comment>> getAllComments(@PathVariable Long postId) {
-        List<Comment> comments = commentService.getAllComments(postId);
+    public ResponseEntity<List<Comment>> getAllComments(@PathVariable String postId) {
+        List<Comment> comments = commentService.getAllCommentsByPostId(postId);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    // Retrieve a comment on a post by ID
     @GetMapping("/{commentId}")
-    public ResponseEntity<Comment> getCommentById(@PathVariable Long postId, @PathVariable Long commentId) {
-        Comment comment = commentService.getCommentById(postId, commentId);
-        return new ResponseEntity<>(comment, HttpStatus.OK);
+    public ResponseEntity<Comment> getCommentById(@PathVariable String commentId) {
+        Optional<Comment> comment = commentService.getCommentById(commentId);
+        return new ResponseEntity<>(comment.get(), HttpStatus.OK);
     }
 
-    // Update a comment on a post by ID
     @PutMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody Comment updatedComment) {
+    public ResponseEntity<Comment> updateComment(@PathVariable String postId, @PathVariable String commentId, @RequestBody Comment updatedComment) {
         Comment comment = commentService.updateComment(postId, commentId, updatedComment);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
-    // Delete a comment on a post by ID
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
-        commentService.deleteComment(postId, commentId);
+    public ResponseEntity<Void> deleteComment(@PathVariable String commentId) {
+        commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

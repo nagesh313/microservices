@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class CommentService{
+public class CommentService {
     private final CommentRepository commentRepository;
 
     @Autowired
@@ -16,30 +17,31 @@ public class CommentService{
         this.commentRepository = commentRepository;
     }
 
-    
-    public Comment createComment(Long postId, Comment comment) {
-        return null;
+
+    public Comment createComment(String postId, Comment comment) {
+        comment.setPostId(postId);
+        return commentRepository.save(comment);
     }
 
-    
-    public List<Comment> getAllComments(Long postId) {
-        return null;
+
+    public List<Comment> getAllCommentsByPostId(String postId) {
+        return commentRepository.findAllByPostId(postId);
     }
 
-    
-    public Comment getCommentById(Long commentId, Long id) {
-        return null;
+
+    public Optional<Comment> getCommentById(String commentId) {
+        return commentRepository.findById(commentId);
     }
 
-    
-    public Comment updateComment(Long commentId, Long id, Comment updatedComment) {
-        return null;
+
+    public Comment updateComment(String commentId, String postId, Comment updatedComment) {
+        updatedComment.setId(commentId);
+        updatedComment.setPostId(postId);
+        return commentRepository.save(updatedComment);
     }
 
-    
-    public void deleteComment(Long commentId, Long id) {
 
+    public void deleteComment(String commentId) {
+        commentRepository.deleteById(commentId);
     }
-
-    // Implement the methods for CommentService
 }

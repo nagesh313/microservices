@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8081}
 spring:
   application:
     name: comment-service
@@ -12,6 +12,9 @@ spring:
     console.enabled: true
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-springdoc:
-  api-docs:
-    path=/api-docs:
+    hibernate:
+      ddl-auto: create-drop
+  boot:
+    admin:
+      client:
+        url: http://localhost:9091
